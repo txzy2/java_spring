@@ -20,6 +20,14 @@ services:
       timeout: 5s
       retries: 5
 
+  h_main_adminer:
+    image: ${ADMINER_VERSION}
+    container_name: spring_adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+    networks:
+      - spring_net
 
 networks:
   spring_net:
