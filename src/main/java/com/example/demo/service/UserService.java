@@ -57,6 +57,7 @@ public class UserService {
         newUser.setEmail(body.getEmail());
         newUser.setAge(body.getAge());
         newUser.setName(body.getName());
+        newUser.setUserHash(passwordEncoder.encode(body.getName() + body.getAge() + body.getEmail()));
 
         User savedUser = userRepository.save(newUser);
         return new UserResponse(savedUser);

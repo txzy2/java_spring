@@ -8,13 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/**
- * Репозиторий для работы с сущностью {@link User}.
- * Предоставляет методы для доступа к данным пользователей в базе данных.
- *
- * @author ВашеИмя
- * @since 1.0
- */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

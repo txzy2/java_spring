@@ -25,9 +25,20 @@ public class User {
     @Column(nullable = false)
     private Integer age;
 
+    @Column(nullable = false)
+    private String userHash;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("user")
     private List<Booking> bookings = new ArrayList<>();
+
+    public String getUserHash() {
+        return userHash;
+    }
+
+    public void setUserHash(String userHash) {
+        this.userHash = userHash;
+    }
 
     public List<Booking> getBookings() {
         return bookings;
