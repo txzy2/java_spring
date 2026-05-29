@@ -1,8 +1,6 @@
 package com.example.demo.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class UserRegisterRequest {
     @NotBlank(message = "Имя не может быть пустым")
@@ -16,8 +14,10 @@ public class UserRegisterRequest {
     @NotBlank(message = "Пароль не может быть пустым")
     @Size(min = 8, max = 32, message = "Пароль должен быть не меньше 8 и не больше 32 символов")
     private String password;
-    @NotBlank(message = "Поле с возрастом не может быть пустым")
-    @Size(min = 18, max = 999, message = "Поле не может может меньше 18")
+
+    @NotNull(message = "Age is required")
+    @Min(value = 1, message = "Age must be greater than 0")
+    @Max(value = 150, message = "Age must be less than 150")
     private Integer age;
 
     public Integer getAge() {

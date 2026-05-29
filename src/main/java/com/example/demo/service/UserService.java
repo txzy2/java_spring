@@ -21,6 +21,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Найти пользователя по имени.
+     *
+     * @param name имя пользователя
+     * @return данные пользователя
+     * @throws UserNotFoundException если пользователь не найден
+     */
     public UserResponse findUserByName(String name) {
         Optional<User> user = this.userRepository.findByUserNamedParam(name);
 
@@ -31,19 +38,27 @@ public class UserService {
         return new UserResponse(user.get());
     }
 
+    /**
+     * Зарегистрировать нового пользователя.
+     *
+     * @param body данные для регистрации (name, email, password, age)
+     * @return данные созданного пользователя
+     * @throws UserAlreadyExistException если email уже занят
+     */
     public UserResponse registerUser(UserRegisterRequest body) {
         if (!this.userRepository.findByUserEmail(body.getEmail()).isEmpty()) {
             throw new UserAlreadyExistException(body.getEmail(), "exist");
         }
 
         User newUser = new User();
+
         String hashedPassword = passwordEncoder.encode(body.getPassword());
         newUser.setPassword(hashedPassword);
+        newUser.setEmail(body.getEmail());
         newUser.setAge(body.getAge());
         newUser.setName(body.getName());
 
         User savedUser = userRepository.save(newUser);
-
         return new UserResponse(savedUser);
     }
 }
