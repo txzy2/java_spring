@@ -6,6 +6,8 @@ import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.UserResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
@@ -34,11 +37,15 @@ public class UserService {
     public UserResponse findUserByHash(String hash) {
         Optional<UserResponse> cached = this.redisService.get(hash, UserResponse.class);
         if (cached.isPresent()) {
+            UserResponse cachedUser = cached.get();
+            logger.debug("Send cached: ID123: {}", cachedUser.getId());
             return cached.get();
         }
 
         User user = this.userRepository.findByUniqueHash(hash)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        logger.debug("SENDING NOT CACHED DATA: {}", user);
 
         UserResponse response = new UserResponse(user);
         this.redisService.set(hash, response, Duration.ofMinutes(30));
@@ -69,7 +76,7 @@ public class UserService {
 
         User savedUser = userRepository.save(newUser);
         this.redisService.set(savedUser.getUserHash(), new UserResponse(savedUser), Duration.ofMinutes(30));
-        
+
         return new UserResponse(savedUser);
     }
 }
