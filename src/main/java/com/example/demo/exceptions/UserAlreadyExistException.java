@@ -1,7 +1,7 @@
 package com.example.demo.exceptions;
 
 public class UserAlreadyExistException extends RuntimeException {
-    public UserAlreadyExistException(String name, String message) {
-        super("User with email '" + name + "' " + message);
+    public UserAlreadyExistException(String paramName, String param) {
+        super("User with '" + paramName + ": " + param + "' already exists");
     }
 }

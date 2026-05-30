@@ -32,6 +32,16 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Booking> bookings = new ArrayList<>();
 
+    public static User create(String email, String name, int age, String hashedPassword, String userHash) {
+        User user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setAge(age);
+        user.setPassword(hashedPassword);
+        user.setUserHash(userHash);
+        return user;
+    }
+
     public String getUserHash() {
         return userHash;
     }

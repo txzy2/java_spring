@@ -61,21 +61,19 @@ public class UserService {
      */
     public UserResponse registerUser(UserRegisterRequest body) {
         if (this.userRepository.findByUserEmail(body.getEmail()).isPresent()) {
-            throw new UserAlreadyExistException(body.getEmail(), "exist");
+            logger.warn("USER {} ALREADY EXIST", body.getEmail());
+            throw new UserAlreadyExistException("email", body.getEmail());
         }
 
-        User newUser = new User();
+        User savedUser = userRepository.save(User.create(
+                body.getEmail(),
+                body.getName(),
+                body.getAge(),
+                passwordEncoder.encode(body.getPassword()),
+                passwordEncoder.encode(body.getName() + body.getAge() + body.getEmail())
+        ));
 
-        String hashedPassword = passwordEncoder.encode(body.getPassword());
-        newUser.setPassword(hashedPassword);
-        newUser.setEmail(body.getEmail());
-        newUser.setAge(body.getAge());
-        newUser.setName(body.getName());
-        newUser.setUserHash(passwordEncoder.encode(body.getName() + body.getAge() + body.getEmail()));
-
-        User savedUser = userRepository.save(newUser);
         this.redisService.set(savedUser.getUserHash(), new UserResponse(savedUser), Duration.ofMinutes(30));
-
         return new UserResponse(savedUser);
     }
 }
