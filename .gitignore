@@ -39,3 +39,4 @@ out/
 .env
 
 ./redis_data
+logs/
