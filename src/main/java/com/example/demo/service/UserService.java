@@ -37,15 +37,14 @@ public class UserService {
     public UserResponse findUserByHash(String hash) {
         Optional<UserResponse> cached = this.redisService.get(hash, UserResponse.class);
         if (cached.isPresent()) {
-            UserResponse cachedUser = cached.get();
-            logger.debug("Send cached: ID123: {}", cachedUser.getId());
             return cached.get();
         }
 
         User user = this.userRepository.findByUniqueHash(hash)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        logger.debug("SENDING NOT CACHED DATA: {}", user);
+                .orElseThrow(() -> {
+                    logger.warn("USER {} not found", hash);
+                    return new UserNotFoundException("User not found");
+                });
 
         UserResponse response = new UserResponse(user);
         this.redisService.set(hash, response, Duration.ofMinutes(30));
