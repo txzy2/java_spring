@@ -9,18 +9,21 @@ import java.util.stream.Collectors;
 
 @JsonPropertyOrder({"id", "name", "email", "age", "bookings"})
 public class UserResponse {
-    private final Long id;
+    private Long id;
 
-    private final String name;
+    private String name;
 
-    private final String email;
+    private String email;
 
-    private final Integer age;
+    private Integer age;
 
     @JsonProperty("org_hash")
-    private final String userHash;
+    private String userHash;
 
     private List<BookingResponse> bookings;
+
+    public UserResponse() {
+    }
 
     public UserResponse(User user) {
         this.id = user.getId();

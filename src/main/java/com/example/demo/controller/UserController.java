@@ -18,8 +18,8 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUser(@Validated @RequestParam String name) {
-        return ResponseEntity.ok(this.userService.findUserByName(name));
+    public ResponseEntity<UserResponse> getUser(@Validated @RequestParam String hash) {
+        return ResponseEntity.ok(this.userService.findUserByHash(hash));
     }
 
     @PostMapping("/user/register")

@@ -24,6 +24,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.name = :userName")
     Optional<User> findByUserNamedParam(@Param("userName") String name);
 
+    @Query("SELECT u FROM User u WHERE u.userHash = :userHash")
+    Optional<User> findByUniqueHash(@Param("userHash") String hash);
+
     /**
      * Находит пользователя по его электронной почте.
      *

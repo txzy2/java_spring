@@ -9,33 +9,41 @@ import com.example.demo.response.UserResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisService redisService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.redisService = redisService;
     }
 
     /**
      * Найти пользователя по имени.
      *
-     * @param name имя пользователя
+     * @param hash уникальный хэш
      * @return данные пользователя
      * @throws UserNotFoundException если пользователь не найден
      */
-    public UserResponse findUserByName(String name) {
-        Optional<User> user = this.userRepository.findByUserNamedParam(name);
-
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(name, "not found");
+    public UserResponse findUserByHash(String hash) {
+        Optional<UserResponse> cached = this.redisService.get(hash, UserResponse.class);
+        if (cached.isPresent()) {
+            return cached.get();
         }
 
-        return new UserResponse(user.get());
+        User user = this.userRepository.findByUniqueHash(hash)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        UserResponse response = new UserResponse(user);
+        this.redisService.set(hash, response, Duration.ofMinutes(30));
+
+        return response;
     }
 
     /**
@@ -46,7 +54,7 @@ public class UserService {
      * @throws UserAlreadyExistException если email уже занят
      */
     public UserResponse registerUser(UserRegisterRequest body) {
-        if (!this.userRepository.findByUserEmail(body.getEmail()).isEmpty()) {
+        if (this.userRepository.findByUserEmail(body.getEmail()).isPresent()) {
             throw new UserAlreadyExistException(body.getEmail(), "exist");
         }
 
@@ -60,6 +68,8 @@ public class UserService {
         newUser.setUserHash(passwordEncoder.encode(body.getName() + body.getAge() + body.getEmail()));
 
         User savedUser = userRepository.save(newUser);
+        this.redisService.set(savedUser.getUserHash(), new UserResponse(savedUser), Duration.ofMinutes(30));
+        
         return new UserResponse(savedUser);
     }
 }
