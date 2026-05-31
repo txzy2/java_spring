@@ -10,14 +10,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private final List<Roles> roles = new ArrayList<>();
+    private Roles roles;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,12 +57,12 @@ public class User extends BaseEntity {
         this.extId = extId;
     }
 
-    public List<Roles> getRoles() {
+    public Roles getRoles() {
         return roles;
     }
 
     public void setRole(Roles role) {
-        this.roles.add(role);
+        this.roles = role;
     }
 
     public String getUserHash() {

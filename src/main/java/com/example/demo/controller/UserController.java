@@ -21,7 +21,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<UserResponse> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
-        return ResponseEntity.ok(this.userService.findUserByExtId(extId));
+        return ResponseEntity.ok(this.userService.findUserByExtIdOrThrow(extId));
     }
 
     @PostMapping("/user/register")

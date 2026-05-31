@@ -1,11 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Roles;
 import com.example.demo.entity.User;
-import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.exceptions.UserAlreadyExistException;
 import com.example.demo.exceptions.UserNotFoundException;
-import com.example.demo.repository.RolesRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.UserResponse;
@@ -22,14 +19,14 @@ import java.util.UUID;
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
-    private final RolesRepository rolesRepository;
+    private final RolesService rolesService;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
 
-    public UserService(UserRepository userRepository, RolesRepository rolesRepository, PasswordEncoder passwordEncoder,
+    public UserService(UserRepository userRepository, RolesService rolesService, PasswordEncoder passwordEncoder,
                        RedisService redisService) {
         this.userRepository = userRepository;
-        this.rolesRepository = rolesRepository;
+        this.rolesService = rolesService;
         this.passwordEncoder = passwordEncoder;
         this.redisService = redisService;
     }
@@ -37,11 +34,11 @@ public class UserService {
     /**
      * Найти пользователя по имени.
      *
-     * @param extId уникальный хэш
+     * @param extId уникальный идентификатор пользователя
      * @return данные пользователя
      * @throws UserNotFoundException если пользователь не найден
      */
-    public UserResponse findUserByExtId(UUID extId) {
+    public UserResponse findUserByExtIdOrThrow(UUID extId) {
         Optional<UserResponse> cached = this.redisService.get(extId.toString(), UserResponse.class);
         if (cached.isPresent()) {
             return cached.get();
@@ -67,13 +64,15 @@ public class UserService {
      * @throws UserAlreadyExistException если email уже занят
      */
     public UserResponse registerUser(UserRegisterRequest body) {
-        if (this.userRepository.findByUserEmail(body.getEmail()).isPresent()) {
-            logger.warn("USER {} ALREADY EXIST", body.getEmail());
-            throw new UserAlreadyExistException("email", body.getEmail());
-        }
-
-        Roles role = rolesRepository.findByName(body.getRole())
-                .orElseThrow(() -> new RoleNotFound("Role {} not found", body.getRole().name()));
+        this.userRepository.findByUserEmail(body.getEmail())
+                .ifPresentOrElse(
+                        user -> {
+                            logger.warn("USER {} ALREADY EXIST", body.getEmail());
+                            throw new UserAlreadyExistException("email", body.getEmail());
+                        },
+                        () -> {
+                        }
+                );
 
         User savedUser = userRepository.save(User.create(
                 body.getEmail(),
@@ -81,11 +80,11 @@ public class UserService {
                 body.getAge(),
                 passwordEncoder.encode(body.getPassword()),
                 passwordEncoder.encode(body.getName() + body.getAge() + body.getEmail()),
-                role,
+                rolesService.findRoleByNameOrThrow(body.getRole()),
                 UUID.randomUUID()
         ));
 
-        this.redisService.set(savedUser.getUserHash(), new UserResponse(savedUser), Duration.ofMinutes(30));
+        this.redisService.set(savedUser.getExtId().toString(), new UserResponse(savedUser), Duration.ofMinutes(30));
         return new UserResponse(savedUser);
     }
 }

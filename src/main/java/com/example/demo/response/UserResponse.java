@@ -1,6 +1,7 @@
 package com.example.demo.response;
 
 import com.example.demo.entity.User;
+import com.example.demo.enums.RoleName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -26,7 +27,7 @@ public class UserResponse {
 
     private List<BookingResponse> bookings;
 
-    private List<RoleResponse> role;
+    private RoleName role;
 
     public UserResponse() {
     }
@@ -37,9 +38,7 @@ public class UserResponse {
         this.email = user.getEmail();
         this.age = user.getAge();
         this.userHash = user.getUserHash();
-        this.role = user.getRoles().stream()
-                .map(r -> new RoleResponse(r.getName().name()))
-                .toList();
+        this.role = user.getRoles().getName();
         this.extId = user.getExtId();
 
         if (user.getBookings() != null) {
@@ -73,7 +72,7 @@ public class UserResponse {
         return bookings;
     }
 
-    public List<RoleResponse> getRole() {
+    public RoleName getRole() {
         return role;
     }
 }
