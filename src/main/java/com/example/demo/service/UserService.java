@@ -63,16 +63,11 @@ public class UserService {
      * @return данные созданного пользователя
      * @throws UserAlreadyExistException если email уже занят
      */
-    public UserResponse registerUser(UserRegisterRequest body) {
+    public UUID registerUser(UserRegisterRequest body) {
         this.userRepository.findByUserEmail(body.getEmail())
-                .ifPresentOrElse(
-                        user -> {
-                            logger.warn("USER {} ALREADY EXIST", body.getEmail());
-                            throw new UserAlreadyExistException("email", body.getEmail());
-                        },
-                        () -> {
-                        }
-                );
+                .ifPresent(user -> {
+                    throw new UserAlreadyExistException("email", body.getEmail());
+                });
 
         User savedUser = userRepository.save(User.create(
                 body.getEmail(),
@@ -85,6 +80,6 @@ public class UserService {
         ));
 
         this.redisService.set(savedUser.getExtId().toString(), new UserResponse(savedUser), Duration.ofMinutes(30));
-        return new UserResponse(savedUser);
+        return savedUser.getExtId();
     }
 }

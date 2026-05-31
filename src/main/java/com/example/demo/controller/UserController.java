@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.request.UserRegisterRequest;
+import com.example.demo.response.BaseApiResponse;
 import com.example.demo.response.UserResponse;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
-        return ResponseEntity.ok(this.userService.findUserByExtIdOrThrow(extId));
+    public ResponseEntity<BaseApiResponse<UserResponse>> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
+        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.findUserByExtIdOrThrow(extId)));
     }
 
     @PostMapping("/user/register")
-    public ResponseEntity<UserResponse> registerUser(@Validated @RequestBody UserRegisterRequest request) {
-        return ResponseEntity.ok(this.userService.registerUser(request));
+    public ResponseEntity<BaseApiResponse<UUID>> registerUser(@Validated @RequestBody UserRegisterRequest request) {
+        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.registerUser(request)));
     }
 
 }
