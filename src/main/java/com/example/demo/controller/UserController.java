@@ -23,18 +23,17 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<BaseApiResponse<UserResponse>> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
-        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.findUserByExtIdOrThrow(extId)));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.findUserByExtIdOrThrow(extId)));
     }
 
     @PostMapping("/user/register")
     public ResponseEntity<BaseApiResponse<UUID>> registerUser(@Validated @RequestBody UserRegisterRequest request) {
-        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.registerUser(request)));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.registerUser(request)));
     }
 
     @PostMapping("/user/login")
     public ResponseEntity<BaseApiResponse<String>> login(@RequestBody UserLoginRequest request) {
-        String token = userService.login(request);
-        return ResponseEntity.ok(BaseApiResponse.ok(token));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.login(request)));
     }
 
 }
