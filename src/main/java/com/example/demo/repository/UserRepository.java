@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -24,8 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.name = :userName")
     Optional<User> findByUserNamedParam(@Param("userName") String name);
 
-    @Query("SELECT u FROM User u WHERE u.userHash = :userHash")
-    Optional<User> findByUniqueHash(@Param("userHash") String hash);
+    @Query("SELECT u FROM User u WHERE u.extId = :extId")
+    Optional<User> findByExtId(@Param("extId") UUID extId);
 
     /**
      * Находит пользователя по его электронной почте.

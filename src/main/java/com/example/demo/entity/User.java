@@ -5,41 +5,65 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private final List<Roles> roles = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, length = 50)
     private String name;
-
     @Column(nullable = false, unique = true, length = 100)
     private String email;
-
     @Column(nullable = false, length = 256)
     private String password;
-
     @Column(nullable = false)
     private Integer age;
-
     @Column(nullable = false)
     private String userHash;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("user")
     private List<Booking> bookings = new ArrayList<>();
+    @Column(nullable = false, unique = true)
+    private UUID extId;
 
-    public static User create(String email, String name, int age, String hashedPassword, String userHash) {
+    public static User create(String email, String name, int age, String hashedPassword, String userHash, Roles role,
+                              UUID extId) {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
         user.setAge(age);
         user.setPassword(hashedPassword);
         user.setUserHash(userHash);
+        user.setRole(role);
+        user.setExtId(extId);
         return user;
+    }
+
+    public UUID getExtId() {
+        return extId;
+    }
+
+    public void setExtId(UUID extId) {
+        this.extId = extId;
+    }
+
+    public List<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRole(Roles role) {
+        this.roles.add(role);
     }
 
     public String getUserHash() {

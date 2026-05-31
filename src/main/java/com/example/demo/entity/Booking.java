@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "bookings")
-public class Booking {
+public class Booking extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

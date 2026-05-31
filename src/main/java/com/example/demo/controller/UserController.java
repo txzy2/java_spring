@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -18,8 +20,8 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUser(@Validated @RequestParam String hash) {
-        return ResponseEntity.ok(this.userService.findUserByHash(hash));
+    public ResponseEntity<UserResponse> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
+        return ResponseEntity.ok(this.userService.findUserByExtId(extId));
     }
 
     @PostMapping("/user/register")

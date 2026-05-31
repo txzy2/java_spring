@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({"id", "name", "email", "age", "bookings"})
+@JsonPropertyOrder({"id", "name", "email", "age", "bookings", "roles", "ext_id"})
 public class UserResponse {
     private Long id;
 
@@ -20,7 +21,12 @@ public class UserResponse {
     @JsonProperty("org_hash")
     private String userHash;
 
+    @JsonProperty("ext_id")
+    private UUID extId;
+
     private List<BookingResponse> bookings;
+
+    private List<RoleResponse> role;
 
     public UserResponse() {
     }
@@ -31,6 +37,10 @@ public class UserResponse {
         this.email = user.getEmail();
         this.age = user.getAge();
         this.userHash = user.getUserHash();
+        this.role = user.getRoles().stream()
+                .map(r -> new RoleResponse(r.getName().name()))
+                .toList();
+        this.extId = user.getExtId();
 
         if (user.getBookings() != null) {
             this.bookings = user.getBookings().stream()
@@ -61,5 +71,9 @@ public class UserResponse {
 
     public List<BookingResponse> getBookings() {
         return bookings;
+    }
+
+    public List<RoleResponse> getRole() {
+        return role;
     }
 }

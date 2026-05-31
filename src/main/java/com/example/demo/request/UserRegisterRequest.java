@@ -1,5 +1,6 @@
 package com.example.demo.request;
 
+import com.example.demo.enums.RoleName;
 import jakarta.validation.constraints.*;
 
 public class UserRegisterRequest {
@@ -19,6 +20,13 @@ public class UserRegisterRequest {
     @Min(value = 1, message = "Age must be greater than 0")
     @Max(value = 150, message = "Age must be less than 150")
     private Integer age;
+
+    @NotNull(message = "Роль не может быть пустой")
+    private RoleName role;
+
+    public RoleName getRole() {
+        return role;
+    }
 
     public Integer getAge() {
         return age;
