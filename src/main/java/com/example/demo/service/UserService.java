@@ -4,10 +4,13 @@ import com.example.demo.entity.User;
 import com.example.demo.exceptions.UserAlreadyExistException;
 import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.request.UserLoginRequest;
 import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.UserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +23,17 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final RolesService rolesService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
 
     public UserService(UserRepository userRepository, RolesService rolesService, PasswordEncoder passwordEncoder,
-                       RedisService redisService) {
+                       RedisService redisService, JwtService jwtService) {
         this.userRepository = userRepository;
         this.rolesService = rolesService;
         this.passwordEncoder = passwordEncoder;
         this.redisService = redisService;
+        this.jwtService = jwtService;
     }
 
     /**
@@ -63,6 +68,7 @@ public class UserService {
      * @return данные созданного пользователя
      * @throws UserAlreadyExistException если email уже занят
      */
+    @Async
     public UUID registerUser(UserRegisterRequest body) {
         this.userRepository.findByEmail(body.getEmail())
                 .ifPresent(user -> {
@@ -80,5 +86,17 @@ public class UserService {
         ));
 
         return savedUser.getExtId();
+    }
+
+    public String login(UserLoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+
+        redisService.set(user.getExtId().toString(), new UserResponse(user), Duration.ofMinutes(30));
+        return jwtService.generate(user);
     }
 }

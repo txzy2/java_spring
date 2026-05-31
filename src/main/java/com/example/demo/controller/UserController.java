@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.request.UserLoginRequest;
 import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.BaseApiResponse;
 import com.example.demo.response.UserResponse;
@@ -28,6 +29,12 @@ public class UserController {
     @PostMapping("/user/register")
     public ResponseEntity<BaseApiResponse<UUID>> registerUser(@Validated @RequestBody UserRegisterRequest request) {
         return ResponseEntity.ok(BaseApiResponse.ok(this.userService.registerUser(request)));
+    }
+
+    @PostMapping("/user/login")
+    public ResponseEntity<BaseApiResponse<String>> login(@RequestBody UserLoginRequest request) {
+        String token = userService.login(request);
+        return ResponseEntity.ok(BaseApiResponse.ok(token));
     }
 
 }
