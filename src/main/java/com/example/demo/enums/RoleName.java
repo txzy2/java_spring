@@ -1,6 +1,4 @@
-package com.example.demo.enums
-
-;
+package com.example.demo.enums;
 
 public enum RoleName {
     USER, ADMIN, MODERATOR

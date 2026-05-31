@@ -19,9 +19,6 @@ public class UserResponse {
 
     private Integer age;
 
-    @JsonProperty("org_hash")
-    private String userHash;
-
     @JsonProperty("ext_id")
     private UUID extId;
 
@@ -37,8 +34,7 @@ public class UserResponse {
         this.name = user.getName();
         this.email = user.getEmail();
         this.age = user.getAge();
-        this.userHash = user.getUserHash();
-        this.role = user.getRoles().getName();
+        this.role = user.getRole().getName();
         this.extId = user.getExtId();
 
         if (user.getBookings() != null) {
@@ -62,10 +58,6 @@ public class UserResponse {
 
     public Integer getAge() {
         return age;
-    }
-
-    public String getUserHash() {
-        return userHash;
     }
 
     public List<BookingResponse> getBookings() {

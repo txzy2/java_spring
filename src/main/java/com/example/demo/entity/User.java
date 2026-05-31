@@ -2,21 +2,27 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "users")
+@NoArgsConstructor
 public class User extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_roles",
+            name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Roles roles;
+    private Roles role;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,78 +53,6 @@ public class User extends BaseEntity {
         user.setRole(role);
         user.setExtId(extId);
         return user;
-    }
-
-    public UUID getExtId() {
-        return extId;
-    }
-
-    public void setExtId(UUID extId) {
-        this.extId = extId;
-    }
-
-    public Roles getRoles() {
-        return roles;
-    }
-
-    public void setRole(Roles role) {
-        this.roles = role;
-    }
-
-    public String getUserHash() {
-        return userHash;
-    }
-
-    public void setUserHash(String userHash) {
-        this.userHash = userHash;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 
     public void addBooking(Booking booking) {

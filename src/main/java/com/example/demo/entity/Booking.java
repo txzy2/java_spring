@@ -2,12 +2,18 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "bookings")
+@NoArgsConstructor
 public class Booking extends BaseEntity {
 
     @Id
@@ -21,29 +27,5 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties("bookings")
     private User user;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(LocalDateTime bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
 }

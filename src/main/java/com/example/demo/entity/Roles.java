@@ -2,9 +2,15 @@ package com.example.demo.entity;
 
 import com.example.demo.enums.RoleName;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "roles")
+@NoArgsConstructor
 public class Roles extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,21 +18,4 @@ public class Roles extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private RoleName name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RoleName getName() {
-        return name;
-    }
-
-    public void setName(RoleName name) {
-        this.name = name;
-    }
-
 }
