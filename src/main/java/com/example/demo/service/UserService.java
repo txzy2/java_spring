@@ -86,6 +86,13 @@ public class UserService {
         return savedUser.getExtId();
     }
 
+    /**
+     * Вход пользователя
+     *
+     * @param request данные входа пользователя (email, password)
+     * @return JWT токен
+     * @throws UserNotFoundException пользователь не найден
+     */
     public String login(UserLoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
