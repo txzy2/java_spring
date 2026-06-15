@@ -2,6 +2,7 @@ package com.example.demo.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler {
         error.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
 }

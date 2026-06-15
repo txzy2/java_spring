@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
 
@@ -21,20 +21,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/")
     public ResponseEntity<BaseApiResponse<UserResponse>> getUser(@Validated @RequestParam(name = "ext_id") UUID extId) {
-        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.findUserByExtIdOrThrow(extId)));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.findUserByExtIdOrThrow(extId)));
     }
 
-    @PostMapping("/user/register")
+    @PostMapping("/register")
     public ResponseEntity<BaseApiResponse<UUID>> registerUser(@Validated @RequestBody UserRegisterRequest request) {
-        return ResponseEntity.ok(BaseApiResponse.ok(this.userService.registerUser(request)));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.registerUser(request)));
     }
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public ResponseEntity<BaseApiResponse<String>> login(@RequestBody UserLoginRequest request) {
-        String token = userService.login(request);
-        return ResponseEntity.ok(BaseApiResponse.ok(token));
+        return ResponseEntity.ok(BaseApiResponse.ok(userService.login(request)));
     }
 
 }

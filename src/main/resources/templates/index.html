@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Заголовок</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: #0f0f0f;
+            color: #e5e5e5;
+        }
+
+        nav {
+            background: #1a1a1a;
+            border-bottom: 1px solid #2a2a2a;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            color: #888;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #e5e5e5;
+        }
+
+        .page {
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: #888;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #aaa;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-item {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            color: #e5e5e5;
+        }
+
+        .rank {
+            font-size: 13px;
+            color: #555;
+            width: 20px;
+        }
+
+        .badge {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: #1a3a25;
+            color: #4caf72;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <span class="logo">HLTV</span>
+    <div class="nav-links">
+        <a href="#">Главная</a>
+        <a href="#">Команды</a>
+        <a href="#">Матчи</a>
+    </div>
+</nav>
+
+<div class="page">
+    <div class="hero">
+        <h1 th:text="${title}">Заголовок</h1>
+        <p>Рейтинг лучших CS2 команд мира</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-label">Команд</div>
+            <svg class="lucide lucide-building2-icon lucide-building-2" fill="none" height="20" stroke="currentColor"
+                 stroke-linecap="round"
+                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12h4"/>
+                <path d="M10 8h4"/>
+                <path d="M14 21v-3a2 2 0 0 0-4 0v3"/>
+                <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/>
+                <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/>
+            </svg>
+            <div class="stat-value" th:text="${teamsCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Мейджоров</div>
+            <svg class="lucide lucide-trophy-icon lucide-trophy" fill="none" height="20" stroke="currentColor"
+                 stroke-linecap="round"
+                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/>
+                <path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/>
+                <path d="M18 9h1.5a1 1 0 0 0 0-5H18"/>
+                <path d="M4 22h16"/>
+                <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/>
+                <path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>
+            </svg>
+            <div class="stat-value" th:text="${majorsCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Онлайн</div>
+            <svg class="lucide lucide-user-icon lucide-user" fill="none" height="20" stroke="currentColor"
+                 stroke-linecap="round"
+                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <div class="stat-value" th:text="${online}">0</div>
+        </div>
+    </div>
+
+    <p class="section-title">Топ команды</p>
+    <div class="list">
+        <div class="list-item" th:each="item, stat : ${items}">
+            <span class="rank" th:text="${stat.index + 1}">1</span>
+            <span th:text="${item}">Команда</span>
+            <span class="badge">топ</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

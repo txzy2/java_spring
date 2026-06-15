@@ -11,3 +11,6 @@ down-dev:
 
 lz:
 	lazydocker
+
+prod-build:
+	dc -f compose.dev.yml down spring_app && dc -f compose.dev.yml up -d --build spring_app

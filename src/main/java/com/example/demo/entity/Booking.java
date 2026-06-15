@@ -23,9 +23,16 @@ public class Booking extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime bookingDate;
 
+    @Column(nullable = true)
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnoreProperties("bookings")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Doctors doctor;
 }

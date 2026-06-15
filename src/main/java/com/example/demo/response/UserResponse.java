@@ -4,11 +4,13 @@ import com.example.demo.entity.User;
 import com.example.demo.enums.RoleName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Getter
 @JsonPropertyOrder({"id", "name", "email", "age", "bookings", "roles", "ext_id"})
 public class UserResponse {
     private Long id;
@@ -42,29 +44,5 @@ public class UserResponse {
                     .map(BookingResponse::new)
                     .collect(Collectors.toList());
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<BookingResponse> getBookings() {
-        return bookings;
-    }
-
-    public RoleName getRole() {
-        return role;
     }
 }

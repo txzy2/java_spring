@@ -9,7 +9,6 @@ import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.UserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,19 +43,19 @@ public class UserService {
      * @throws UserNotFoundException если пользователь не найден
      */
     public UserResponse findUserByExtIdOrThrow(UUID extId) {
-        Optional<UserResponse> cached = this.redisService.get(extId.toString(), UserResponse.class);
+        Optional<UserResponse> cached = redisService.get(extId.toString(), UserResponse.class);
         if (cached.isPresent()) {
             return cached.get();
         }
 
-        User user = this.userRepository.findByExtId(extId)
+        User user = userRepository.findByExtId(extId)
                 .orElseThrow(() -> {
                     logger.warn("USER {} not found", extId);
                     return new UserNotFoundException("User not found");
                 });
 
         UserResponse response = new UserResponse(user);
-        this.redisService.set(extId.toString(), response, Duration.ofMinutes(30));
+        redisService.set(extId.toString(), response, Duration.ofMinutes(30));
 
         return response;
     }
@@ -68,9 +67,8 @@ public class UserService {
      * @return данные созданного пользователя
      * @throws UserAlreadyExistException если email уже занят
      */
-    @Async
     public UUID registerUser(UserRegisterRequest body) {
-        this.userRepository.findByEmail(body.getEmail())
+        userRepository.findByEmail(body.getEmail())
                 .ifPresent(user -> {
                     throw new UserAlreadyExistException("email", body.getEmail());
                 });
@@ -88,6 +86,13 @@ public class UserService {
         return savedUser.getExtId();
     }
 
+    /**
+     * Вход пользователя
+     *
+     * @param request данные входа пользователя (email, password)
+     * @return JWT токен
+     * @throws UserNotFoundException пользователь не найден
+     */
     public String login(UserLoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

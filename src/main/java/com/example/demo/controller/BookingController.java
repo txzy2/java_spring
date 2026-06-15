@@ -13,7 +13,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-//    public ResponseEntity<String> createBooking(@RequestBody User user) {
+//    public ResponseEntity<String> createBooking(@RequestBody CreateBookingRequest request) {
 //
 //    }
 }
