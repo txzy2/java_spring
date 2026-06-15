@@ -17,5 +17,4 @@ public class TestController extends BaseController {
                 ? ResponseEntity.ok("SUCCESS")
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR");
     }
-
 }

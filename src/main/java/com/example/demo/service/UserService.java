@@ -9,7 +9,6 @@ import com.example.demo.request.UserRegisterRequest;
 import com.example.demo.response.UserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,7 +67,6 @@ public class UserService {
      * @return данные созданного пользователя
      * @throws UserAlreadyExistException если email уже занят
      */
-    @Async
     public UUID registerUser(UserRegisterRequest body) {
         userRepository.findByEmail(body.getEmail())
                 .ifPresent(user -> {

@@ -14,10 +14,10 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("""
                 {
-                    "status": 403,
+                    "status": 401,
                     "message": "Access denied. Token is missing or invalid"
                 }
                 """);

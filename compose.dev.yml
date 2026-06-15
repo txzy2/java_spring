@@ -41,6 +41,28 @@ services:
     networks:
       - spring_net
 
+  spring_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_app
+    restart: always
+    ports:
+      - "${APP_PORT}:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://spring_db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - SPRING_REDIS_HOST=spring_redis
+      - SPRING_REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      spring_db:
+        condition: service_healthy
+    networks:
+      - spring_net
+
 networks:
   spring_net:
     external: true
