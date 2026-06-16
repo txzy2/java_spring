@@ -1,16 +1,26 @@
-.PHONY: r
+.PHONY: rd
 
-r:
-	./gradlew bootRun
+dud:
+	docker compose -f compose.dev.yml --env-file .env.dev up -d
 
-up-dev:
-	docker compose -f compose.dev.yml up -d
-
-down-dev:
+ddd:
 	docker compose -f compose.dev.yml down
+
+rda: dud
+	./gradlew bootRun --args='--spring.profiles.active=dev'
+
+rp:
+	docker compose -f compose.prod.yml --env-file .env.prod down && \
+    docker compose -f compose.prod.yml --env-file .env.prod up -d --build
 
 lz:
 	lazydocker
 
-prod-build:
-	dc -f compose.dev.yml down spring_app && dc -f compose.dev.yml up -d --build spring_app
+pal:
+	docker logs -f --tail=50 spring_app
+
+psp:
+	docker compose -f compose.prod.yml --env-file .env.prod ps
+
+psd:
+	docker compose -f compose.dev.yml --env-file .env.dev ps
