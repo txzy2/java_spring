@@ -38,5 +38,5 @@ out/
 
 .env.*
 
-./redis_data
+redis_data/
 logs/

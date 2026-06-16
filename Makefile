@@ -10,9 +10,10 @@ rda:
 	@docker compose -f compose.dev.yml --env-file .env.dev up -d
 	@sudo chmod -R 777 logs/
 	@( \
-		trap 'docker compose -f compose.dev.yml down' EXIT; \
 		./gradlew classes --continuous & \
-		./gradlew bootRun --args='--spring.profiles.active=dev'; \
+		CLASSES_PID=$$!; \
+		trap 'kill $$CLASSES_PID; docker compose -f compose.dev.yml --env-file .env.dev down' INT TERM EXIT; \
+		./gradlew bootRun --args="--spring.profiles.active=dev"; \
 	)
 
 rp:
