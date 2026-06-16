@@ -21,7 +21,7 @@ public class RolesService {
         return rolesRepository.findByName(role)
                 .orElseThrow(() -> {
                     logger.warn("ROLE {} IS NOT FOUND", role);
-                    return new RoleNotFound("Role {} not found", role.name());
+                    return new RoleNotFound("Role not found123 ", role.name());
                 });
     }
 }

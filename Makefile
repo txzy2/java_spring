@@ -6,8 +6,14 @@ dud:
 ddd:
 	docker compose -f compose.dev.yml down
 
-rda: dud
-	./gradlew bootRun --args='--spring.profiles.active=dev'
+rda:
+	@docker compose -f compose.dev.yml --env-file .env.dev up -d
+	@sudo chmod -R 777 logs/
+	@( \
+		trap 'docker compose -f compose.dev.yml down' EXIT; \
+		./gradlew classes --continuous & \
+		./gradlew bootRun --args='--spring.profiles.active=dev'; \
+	)
 
 rp:
 	docker compose -f compose.prod.yml --env-file .env.prod down && \
