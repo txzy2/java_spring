@@ -1,4 +1,4 @@
-### Run project
+### Copy env
 
     prod: cp .env.example .env.prod
     dev: cp .env.example .env.dev
