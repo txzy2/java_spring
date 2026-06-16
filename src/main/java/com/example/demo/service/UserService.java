@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,21 +42,13 @@ public class UserService {
      * @throws UserNotFoundException если пользователь не найден
      */
     public UserResponse findUserByExtIdOrThrow(UUID extId) {
-        Optional<UserResponse> cached = redisService.get(extId.toString(), UserResponse.class);
-        if (cached.isPresent()) {
-            return cached.get();
-        }
-
         User user = userRepository.findByExtId(extId)
                 .orElseThrow(() -> {
                     logger.warn("USER {} not found", extId);
                     return new UserNotFoundException("User not found");
                 });
 
-        UserResponse response = new UserResponse(user);
-        redisService.set(extId.toString(), response, Duration.ofMinutes(30));
-
-        return response;
+        return new UserResponse(user);
     }
 
     /**

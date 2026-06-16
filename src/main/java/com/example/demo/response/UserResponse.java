@@ -39,7 +39,7 @@ public class UserResponse {
         this.role = user.getRole().getName();
         this.extId = user.getExtId();
 
-        if (user.getBookings() != null) {
+        if (user.getBookings() != null && user.getRole().getName() != RoleName.DOCTOR) {
             this.bookings = user.getBookings().stream()
                     .map(BookingResponse::new)
                     .collect(Collectors.toList());
